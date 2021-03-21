@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t abatalla/react-test -f ./client/Dockerfile.dev ./client/Dockerfile.dev
+
+script:
+  - docker run abatalla/react-test npm test -- -- coverage
+
+after_success:
+  - docker build -t abatalla/multi-client ./client
+  - docker build -t abatalla/multi-nginx ./nginx
+  - docker build -t abatalla/multi-server ./server
+  - docker build -t abatalla/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" |  docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push abatalla/multi-client
+  - docker push abatalla/multi-nginx
+  - docker push abatalla/multi-server
+  - docker push abatalla/multi-worker
