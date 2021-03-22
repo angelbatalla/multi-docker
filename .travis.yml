@@ -11,14 +11,14 @@ script:
   - docker run -e CI=true cygnetops/react-test npm test
 
 after_success:
-  - docker build -t abatalla/multi-client-10-14 ./client
+  - docker build -t abatalla/multi-client ./client
   - docker build -t abatalla/multi-nginx-10-14 ./nginx
   - docker build -t abatalla/multi-server-10-14 ./server
   - docker build -t abatalla/multi-worker-10-14 ./worker
   # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Take those images and push them to docker hub
-  - docker push abatalla/multi-client-10-14
+  - docker push abatalla/multi-client
   - docker push abatalla/multi-nginx-10-14
   - docker push abatalla/multi-server-10-14
   - docker push abatalla/multi-worker-10-14
